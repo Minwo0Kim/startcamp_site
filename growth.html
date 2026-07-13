@@ -192,11 +192,8 @@
             <i class="fa-solid fa-chart-line animate-bounce"></i> MINWOO BODY PROGRESS
         </span>
         <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
-            맛있게 먹고도 이루어 낸 <span class="text-brand-orange">상승 다이어트</span>
+            반 년간의 <span class="text-brand-orange">성장일지</span>
         </h1>
-        <p class="text-sm sm:text-base text-brand-grayText max-w-xl mx-auto leading-relaxed">
-            "저렇게 잘 먹으면서 몸 관리가 되나요?" 네, 가능합니다. 정직한 고강도 트레이닝을 통해 근육은 늘리고 체지방은 불태웠습니다.
-        </p>
     </div>
 </header>
 
@@ -220,21 +217,21 @@
                             <span class="text-[11px] text-brand-grayText block mb-0.5">체중 변화</span>
                             <span class="text-xs text-neutral-400">1월 대비 현재</span>
                         </div>
-                        <span class="text-xl font-black text-sky-400">-2.7 kg</span>
+                        <span class="text-xl font-black text-sky-400">+5.0kg </span>
                     </div>
                     <div class="bg-brand-black/40 p-4 rounded-xl border border-brand-border/40 flex justify-between items-center">
                         <div>
                             <span class="text-[11px] text-brand-grayText block mb-0.5">골격근량 증가</span>
                             <span class="text-xs text-neutral-400">순수 근질 상승</span>
                         </div>
-                        <span class="text-xl font-black text-brand-orange">+1.7 kg</span>
+                        <span class="text-xl font-black text-brand-orange">+1.4 kg</span>
                     </div>
                     <div class="bg-brand-black/40 p-4 rounded-xl border border-brand-border/40 flex justify-between items-center">
                         <div>
                             <span class="text-[11px] text-brand-grayText block mb-0.5">체지방량 감소</span>
                             <span class="text-xs text-neutral-400">내장 및 피하지방 컷</span>
                         </div>
-                        <span class="text-xl font-black text-red-400">-6.1 kg</span>
+                        <span class="text-xl font-black text-red-400">+3.1 kg</span>
                     </div>
                 </div>
             </div>
@@ -276,7 +273,7 @@
                         🔥 체지방량
                     </button>
                 </div>
-                <span class="text-xs text-brand-grayText font-medium"><i class="fa-solid fa-clock-rotate-left mr-1"></i>최근 12개월 추이</span>
+                <span class="text-xs text-brand-grayText font-medium"><i class="fa-solid fa-clock-rotate-left mr-1"></i>최근 6개월 추이</span>
             </div>
             
             <div class="relative h-[320px] w-full">
@@ -316,10 +313,10 @@
 <script>
     // ------------------ Chart.js 설정 로직 ------------------
     const rawChartData = {
-        labels: ['1월', '3월', '5월', '7월', '9월', '11월'],
-        weight: [78.5, 77.8, 77.2, 76.8, 76.3, 75.8],
-        muscle: [34.5, 34.8, 35.1, 35.4, 35.8, 36.2],
-        fat: [16.2, 15.0, 13.8, 12.6, 11.2, 10.1]
+        labels: ['11월', '1월', '3월', '5월', '7월'],
+        weight: [72.3, 72.4, 78.5, 78.9, 77.3],
+        muscle: [32.9, 32.8, 35.0, 35.8, 34.3],
+        fat: [13.9, 14.3, 16.7, 16.6, 17.0]
     };
 
     const ctx = document.getElementById('weightGrowthChart').getContext('2d');
