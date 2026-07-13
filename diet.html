@@ -38,6 +38,178 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
+    <!-- 
+  =========================================
+  1단계: <head> ... </head> 태그 안에 넣을 CSS 스타일
+  =========================================
+-->
+<style>
+  /* [핵심] 마우스 포인터가 존재하는 기기(데스크톱 등)에서만 커스텀 커서 활성화 */
+  @media (pointer: fine) {
+    html, body {
+      cursor: none !important; /* 기본 커서 숨기기 */
+    }
+    /* 클릭 가능한 모든 요소에서도 기본 커서 강제 숨김 */
+    a, button, select, input, textarea, [role="button"], iframe {
+      cursor: none !important;
+    }
+    .custom-cursor-container {
+      display: block !important;
+    }
+  }
+
+  /* 터치 기기(모바일, 태블릿)에서는 커스텀 커서를 완전히 숨겨 오작동 방지 */
+  @media (pointer: coarse) {
+    .custom-cursor-container {
+      display: none !important;
+    }
+  }
+
+  /* 커서 컨테이너 전체화면 레이아웃 설정 */
+  .custom-cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* 커서가 클릭 이벤트를 막지 않도록 설정 */
+    z-index: 999999; /* 화면 최상단 고정 */
+    display: none; /* 기본값은 숨김 처리 */
+  }
+
+  /* 덤벨(아령) 커서 스타일 및 부드러운 전환 효과 */
+  .dumbbell-cursor {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transition: transform 0.12s cubic-bezier(0.215, 0.610, 0.355, 1);
+    will-change: transform, left, top;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)); /* 세련된 그림자 효과 */
+  }
+
+  /* 마우스 클릭 시: 덤벨이 스케일업 되며 살짝 회전 (근육 수축 효과) */
+  .dumbbell-cursor.clicking {
+    transform: translate(-50%, -50%) scale(1.3) rotate(-20deg) !important;
+  }
+
+  /* 버튼/링크 호버 시: 덤벨이 커지며 45도 회전 */
+  .dumbbell-cursor.hovering {
+    transform: translate(-50%, -50%) scale(1.4) rotate(45deg);
+  }
+</style>
+
+<!-- 
+  =========================================
+  2단계: 태그 맨 아래( 바로 위)에 넣을 HTML 및 JS
+  =========================================
+-->
+<div class="custom-cursor-container">
+  <!-- 고해상도 SVG 덤벨 (피트니스 주황색 테마 컬러 매칭) -->
+  <svg id="dumbbellCursor" class="dumbbell-cursor" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 중앙 쇠봉 바 -->
+    <rect x="12" y="29" width="40" height="6" rx="3" fill="#a1a1aa" />
+    <rect x="12" y="30" width="40" height="2" rx="1" fill="#f5f5f5" />
+    
+    <!-- 왼쪽 내부 원판 (다크 그레이) -->
+    <rect x="8" y="22" width="4" height="20" rx="2" fill="#27272a" stroke="#4a4a4a" stroke-width="1.5" />
+    <!-- 왼쪽 메인 원판 (오렌지 포인트) -->
+    <rect x="12" y="14" width="6" height="36" rx="3" fill="#f97316" stroke="#ea580c" stroke-width="1.5" />
+    <!-- 왼쪽 마감 마개 -->
+    <rect x="4" y="27" width="4" height="10" rx="1" fill="#71717a" />
+
+    <!-- 오른쪽 메인 원판 (오렌지 포인트) -->
+    <rect x="46" y="14" width="6" height="36" rx="3" fill="#f97316" stroke="#ea580c" stroke-width="1.5" />
+    <!-- 오른쪽 내부 원판 (다크 그레이) -->
+    <rect x="52" y="22" width="4" height="20" rx="2" fill="#27272a" stroke="#4a4a4a" stroke-width="1.5" />
+    <!-- 오른쪽 마감 마개 -->
+    <rect x="56" y="27" width="4" height="10" rx="1" fill="#71717a" />
+
+    <!-- 디테일 홀 원판 데코레이션 -->
+    <circle cx="15" cy="32" r="2" fill="#121212" />
+    <circle cx="49" cy="32" r="2" fill="#121212" />
+  </svg>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cursor = document.getElementById('dumbbellCursor');
+    if (!cursor) return;
+
+    // 마우스 물리 보간(Lerp)을 위한 좌표 변수
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let cursorX = mouseX;
+    let cursorY = mouseY;
+    let isVisible = false;
+
+    // 1. 마우스 움직임 감지 및 동기화
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      if (!isVisible) {
+        cursor.style.opacity = '1';
+        isVisible = true;
+      }
+    });
+
+    // 2. 부드러운 움직임 프레임 렌더링 (Lerp 감도: 0.13)
+    function updatePhysics() {
+      cursorX += (mouseX - cursorX) * 0.13;
+      cursorY += (mouseY - cursorY) * 0.13;
+
+      cursor.style.left = `${cursorX}px`;
+      cursor.style.top = `${cursorY}px`;
+
+      requestAnimationFrame(updatePhysics);
+    }
+    updatePhysics();
+
+    // 3. 클릭(움켜쥐기) 애니메이션 바인딩
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('clicking');
+    });
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('clicking');
+    });
+
+    // 4. 상호작용 가능한 요소 호버 이벤트 감지 함수
+    function initHoverEffects() {
+      const interactiveTargets = document.querySelectorAll(
+        'a, button, input, select, textarea, [role="button"], .interactive-hover'
+      );
+
+      interactiveTargets.forEach((element) => {
+        element.addEventListener('mouseenter', () => {
+          cursor.classList.add('hovering');
+        });
+        element.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hovering');
+        });
+      });
+    }
+
+    // 초기 바인딩 실행
+    initHoverEffects();
+
+    // 동적으로 생성되는 요소를 위해 간헐적 리바인딩 지원 (필요 시 활용)
+    const observer = new MutationObserver(() => {
+      initHoverEffects();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // 5. 마우스가 화면 영역 밖으로 이탈했을 때 처리
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+      isVisible = false;
+    });
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '1';
+      isVisible = true;
+    });
+  });
+</script>
 </head>
 <body class="font-sans antialiased overflow-x-hidden pt-24 pb-12 selection:bg-brand-orange selection:text-white">
 
