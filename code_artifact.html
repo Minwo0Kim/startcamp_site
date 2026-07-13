@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김민우 | 운동이 일상이 될 때, 삶은 활력으로 가득 차니까</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#121212',
+                            card: '#1e1e1e',
+                            orange: '#f97316',
+                            orangeHover: '#ea580c',
+                            grayText: '#a3a3a3',
+                            border: '#2a2a2a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght=300;400;500;700;900&family=Inter:wght=300;400;600;800&display=swap');
+        
+        body { background-color: #121212; color: #f5f5f5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white">
+
+    <nav class="fixed top-0 left-0 w-full z-50 bg-brand-black/90 backdrop-blur-md border-b border-brand-border transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <a href="#" class="text-xl sm:text-2xl font-black tracking-wider flex items-center gap-2">
+                <span class="text-brand-orange"><i class="fa-solid fa-dumbbell"></i></span>
+                MINWOO<span class="text-brand-orange">.</span>FIT
+            </a>
+            <!-- 네비게이션 순서 조정: 운동 루틴 -> 반전 식단 -> 성장 일지 -> 소개 -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold tracking-wide">
+                <a href="#routine" class="hover:text-brand-orange transition-colors">운동 루틴</a>
+                <a href="#diet" class="hover:text-brand-orange transition-colors text-brand-orange">반전 식단</a>
+                <a href="#growth" class="hover:text-brand-orange transition-colors">성장 일지</a>
+                <a href="#about" class="hover:text-brand-orange transition-colors">WHO I AM</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="#cta" class="hidden sm:inline-block bg-brand-orange hover:bg-brand-orangeHover text-white font-bold py-2 px-5 rounded-full text-xs sm:text-sm shadow-lg transition-all transform hover:-translate-y-0.5">함께 시작하기</a>
+                <button id="mobileMenuBtn" class="md:hidden text-white focus:outline-none p-1 text-xl"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </div>
+        <!-- 모바일 드롭다운 메뉴 순서 조정 -->
+        <div id="mobileDropdown" class="hidden md:hidden bg-brand-black/95 border-b border-brand-border px-6 py-4">
+            <div class="flex flex-col gap-4 text-sm font-semibold">
+                <a href="#routine" class="mobile-nav-link hover:text-brand-orange py-2 border-b border-brand-border/40">운동 루틴</a>
+                <a href="#diet" class="mobile-nav-link text-brand-orange hover:text-brand-orange py-2 border-b border-brand-border/40">반전 식단</a>
+                <a href="#growth" class="mobile-nav-link hover:text-brand-orange py-2 border-b border-brand-border/40">성장 일지</a>
+                <a href="#about" class="mobile-nav-link hover:text-brand-orange py-2 pb-3">WHO I AM</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen pt-20 sm:pt-28 flex items-center justify-center overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-96 h-64 sm:h-96 bg-brand-orange/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10 py-8">
+            <div class="lg:col-span-7 text-center lg:text-left">
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none mb-6">안녕하세요,<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-brand-orange">김민우</span> 입니다.</h1>
+                <p class="text-lg sm:text-2xl font-bold text-brand-orange mb-6 leading-relaxed">"운동은 맛있는 고기와 술을 즐기기 위한 짜릿한 준비 운동!"</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#about" class="bg-white hover:bg-neutral-200 text-brand-black text-center font-extrabold px-8 py-4 rounded-xl shadow-xl transition-all">민우와 친해지기</a>
+                    <a href="#diet" class="border border-brand-orange hover:bg-brand-orange/10 text-brand-orange text-center font-extrabold px-8 py-4 rounded-xl transition-all">반전 식단 보기</a>
+                </div>
+            </div>
+            <div class="lg:col-span-5 flex justify-center w-full">
+                <div class="w-full max-w-[420px] bg-brand-card border border-brand-border p-6 rounded-3xl shadow-2xl relative">
+                    <div class="absolute -top-3 right-4 bg-brand-orange text-white text-xs font-extrabold px-3 py-1 rounded-lg uppercase">My Record</div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-full bg-brand-orange/20 border-2 border-brand-orange flex items-center justify-center text-2xl font-black text-brand-orange">KM</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">김민우</h4>
+                            <p class="text-xs text-brand-grayText"><i class="fa-solid fa-location-dot mr-1"></i>열심히 쇠질하고 맛있게 마시는 어른이</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-brand-black/50 p-4 rounded-2xl border border-brand-border/60">
+                            <span class="text-xs text-brand-grayText block mb-1">주간 운동 횟수</span>
+                            <span class="text-2xl font-black text-brand-orange">4회 / 7일</span>
+                        </div>
+                        <div class="bg-brand-black/50 p-4 rounded-2xl border border-brand-border/60">
+                            <span class="text-xs text-brand-grayText block mb-1">현재 운동 중량</span>
+                            <span class="text-2xl font-black text-white">3대 310kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- WORKOUT ROUTINE SECTION -->
+    <section id="routine" class="py-16 sm:py-24 bg-brand-card/20 border-b border-brand-border relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <h2 class="text-[10px] sm:text-xs font-bold text-brand-orange uppercase tracking-widest mb-3">MY WORKOUT ROUTINE</h2>
+                <h3 class="text-2xl sm:text-4xl font-extrabold text-white">민우의 요일별 4분할 루틴</h3>
+                <p class="text-xs sm:text-sm text-brand-grayText mt-3 sm:mt-4 max-w-lg mx-auto">
+                    과도하고 비현실적인 루틴은 과감히 제외했습니다. 현대인을 위한 실속 있고 직관적인 핵심 세트 구성입니다.
+                </p>
+            </div>
+
+            <!-- Workout Cards Grid (Chest, Back, Shoulder, Legs) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Chest Card -->
+                <div class="bg-brand-card border border-brand-border p-5 sm:p-6 rounded-2xl hover:border-brand-orange transition-all duration-300 relative group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] sm:text-xs font-black text-brand-orange uppercase tracking-wider bg-brand-orange/10 px-2.5 py-1 rounded">Day 1</span>
+                            <span class="text-xl sm:text-2xl"><i class="fa-solid fa-shield-halved text-brand-orange"></i></span>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-white mb-1">가슴 루틴 (Chest)</h4>
+                        <p class="text-[11px] sm:text-xs text-brand-grayText mb-4">볼륨감 있는 흉근과 협동근 발달</p>
+                        
+                        <ul class="space-y-2 border-t border-brand-border/60 pt-4 text-xs sm:text-sm text-neutral-300">
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 체스트 플라이</span>
+                                <span class="font-bold text-white whitespace-nowrap">3세트 (8~12회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 벤치프레스</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (8-12회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 인클라인 벤치프레스</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (8-12회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 딥스</span>
+                                <span class="font-bold text-white whitespace-nowrap">3세트 (한계치)</span>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Back Card -->
+                <div class="bg-brand-card border border-brand-border p-5 sm:p-6 rounded-2xl hover:border-brand-orange transition-all duration-300 relative group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] sm:text-xs font-black text-brand-orange uppercase tracking-wider bg-brand-orange/10 px-2.5 py-1 rounded">Day 2</span>
+                            <span class="text-xl sm:text-2xl"><i class="fa-solid fa-child text-brand-orange"></i></span>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-white mb-1">등 루틴 (Back)</h4>
+                        <p class="text-[11px] sm:text-xs text-brand-grayText mb-4">넓고 탄탄한 프레임을 채워주는 운동</p>
+                        
+                        <ul class="space-y-2 border-t border-brand-border/60 pt-4 text-xs sm:text-sm text-neutral-300">
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 암풀다운</span>
+                                <span class="font-bold text-white whitespace-nowrap">3세트 (8-12회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 데드리프트</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (8-10회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 렛풀다운</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (8-12회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 시티드 로우</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (8-12회)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Shoulder Card -->
+                <div class="bg-brand-card border border-brand-border p-5 sm:p-6 rounded-2xl hover:border-brand-orange transition-all duration-300 relative group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] sm:text-xs font-black text-brand-orange uppercase tracking-wider bg-brand-orange/10 px-2.5 py-1 rounded">Day 3</span>
+                            <span class="text-xl sm:text-2xl"><i class="fa-solid fa-user-ninja text-brand-orange"></i></span>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-white mb-1">어깨 루틴 (Shoulder)</h4>
+                        <p class="text-[11px] sm:text-xs text-brand-grayText mb-4">직각 어깨와 입체감 있는 삼각근</p>
+                        
+                        <ul class="space-y-2 border-t border-brand-border/60 pt-4 text-xs sm:text-sm text-neutral-300">
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 숄더프레스</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (12-20회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 리버스 팩덱 플라이</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (12-20회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 사이드 레터럴 레이즈</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (12-20회)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Legs Card -->
+                <div class="bg-brand-card border border-brand-border p-5 sm:p-6 rounded-2xl hover:border-brand-orange transition-all duration-300 relative group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] sm:text-xs font-black text-brand-orange uppercase tracking-wider bg-brand-orange/10 px-2.5 py-1 rounded">Day 4</span>
+                            <span class="text-xl sm:text-2xl"><i class="fa-solid fa-shoe-prints text-brand-orange"></i></span>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-white mb-1">하체 루틴 (Legs)</h4>
+                        <p class="text-[11px] sm:text-xs text-brand-grayText mb-4">강력한 신진대사 촉진과 전신 성장의 엔진</p>
+                        
+                        <ul class="space-y-2 border-t border-brand-border/60 pt-4 text-xs sm:text-sm text-neutral-300">
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 스쿼트</span>
+                                <span class="font-bold text-white whitespace-nowrap">5세트 (8-10회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 레그 프레스</span>
+                                <span class="font-bold text-white whitespace-nowrap">4세트 (12-15회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 레그 익스텐션</span>
+                                <span class="font-bold text-white whitespace-nowrap">3세트 (15회)</span>
+                            </li>
+                            <li class="flex justify-between gap-2">
+                                <span>🏋️‍♂️ 레그 컬</span>
+                                <span class="font-bold text-white whitespace-nowrap">3세트 (12회)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="diet" class="py-24 relative overflow-hidden bg-brand-black border-b border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-extrabold text-white">"이 맛에 땀 흘립니다!" 치팅데이 반전 식단 🥩</h3>
+            </div>
+            
+            <!-- Tarot Spread Cards Layout -->
+            <div class="flex overflow-x-auto md:overflow-x-visible md:grid md:grid-cols-5 md:gap-0 md:justify-center md:items-center py-10 px-4 md:px-0 no-scrollbar gap-6 snap-x snap-mandatory">
+                
+                <!-- Card 1 -->
+                <div class="snap-center shrink-0 w-[280px] md:w-auto bg-brand-card border border-brand-orange/30 rounded-2xl p-4 shadow-xl transition-all duration-300 md:-rotate-12 md:hover:rotate-0 md:hover:-translate-y-8 z-10 min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-xl bg-neutral-900 border border-brand-border overflow-hidden flex items-center justify-center relative mb-4">
+                            <img src="image_843977.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&auto=format&fit=crop&q=80';" alt="모듬회" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-white">빛깔 고운 모듬회 & 소주</h4>
+                        <p class="text-xs text-brand-grayText mt-2 leading-relaxed">신선하고 쫄깃한 활어회 한 점에 차가운 소주 한 잔. 양질의 단백질 보충 핑계로 가장 즐겨 찾는 최고의 치팅 파트너입니다.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="snap-center shrink-0 w-[280px] md:w-auto bg-brand-card border border-brand-orange/30 rounded-2xl p-4 shadow-xl transition-all duration-300 md:-rotate-6 md:hover:rotate-0 md:hover:-translate-y-8 z-20 min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-xl bg-neutral-900 border border-brand-border overflow-hidden flex items-center justify-center relative mb-4">
+                            <img src="image_84397f.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80';" alt="등갈비 폭립" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-white">매콤달콤 등갈비 폭립</h4>
+                        <p class="text-xs text-brand-grayText mt-2 leading-relaxed">비법 양념에 푹 구워낸 뜯는 재미가 일품인 등갈비 폭립. 땀 흘려 가슴과 어깨를 부수고 온 날, 탄수화물과 함께 도파민이 폭발하는 보상입니다.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="snap-center shrink-0 w-[280px] md:w-auto bg-brand-card border border-brand-orange/30 rounded-2xl p-4 shadow-xl transition-all duration-300 md:rotate-0 md:hover:-translate-y-8 z-30 min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-xl bg-neutral-900 border border-brand-border overflow-hidden flex items-center justify-center relative mb-4">
+                            <img src="image_84399d.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80';" alt="삼겹살과 목살" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-white">지글지글 삼겹살 & 목살</h4>
+                        <p class="text-xs text-brand-grayText mt-2 leading-relaxed">하체 운동 스쿼트를 묵직하게 끝내고 불판 위에 올리는 선홍빛 생고기. 뜨거운 불판 위에서 구워지는 고기 향은 그 어떤 부스터보다 강력합니다.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 4 -->
+                <div class="snap-center shrink-0 w-[280px] md:w-auto bg-brand-card border border-brand-orange/30 rounded-2xl p-4 shadow-xl transition-all duration-300 md:rotate-6 md:hover:rotate-0 md:hover:-translate-y-8 z-20 min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-xl bg-neutral-900 border border-brand-border overflow-hidden flex items-center justify-center relative mb-4">
+                            <img src="image_8439d5.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80';" alt="차슈 라멘" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-white">진한 차슈 돈코츠 라멘</h4>
+                        <p class="text-xs text-brand-grayText mt-2 leading-relaxed">깊고 묵직한 사골 육수에 부드러운 차슈와 반숙란을 더한 완벽한 한 그릇. 무거운 덤벨을 들기 위해 몸속에 가득 채우는 소중한 탄수화물 에너지원입니다.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 5 -->
+                <div class="snap-center shrink-0 w-[280px] md:w-auto bg-brand-card border border-brand-orange/30 rounded-2xl p-4 shadow-xl transition-all duration-300 md:rotate-12 md:hover:rotate-0 md:hover:-translate-y-8 z-10 min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-xl bg-neutral-900 border border-brand-border overflow-hidden flex items-center justify-center relative mb-4">
+                            <img src="image_8439dc.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1559737607-3f05499f5a9b?w=600&auto=format&fit=crop&q=80';" alt="대하 소금구이" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-white">바삭 고소 대하 소금구이</h4>
+                        <p class="text-xs text-brand-grayText mt-2 leading-relaxed">굵은소금 위에서 붉게 익어가는 통통한 대하 구이. 껍질째 씹을수록 깊어지는 짭조름한 바다 내음은 주중에 쌓인 모든 스트레스를 단숨에 잊게 만듭니다.</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <section id="growth" class="py-24 bg-brand-card/30 border-b border-brand-border">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-5">
+                <h3 class="text-4xl font-extrabold text-white mb-6">맛있게 먹고도 이루어 낸 상승 다이어트</h3>
+                <p class="text-neutral-300 leading-relaxed mb-6">"저렇게 먹으면 살찌지 않나요?" 절대 그렇지 않습니다. 고기와 술을 유쾌하게 즐기기 위한 정직한 쇠질로 완성한 골격근량 우상향과 체지방량 완만 감소!</p>
+                
+                <!-- 간이 수치 하이라이트 패널 -->
+                <div class="grid grid-cols-3 gap-3 pt-4 border-t border-brand-border/60">
+                    <div class="bg-brand-black/40 p-3 rounded-xl border border-brand-border/40">
+                        <span class="text-[11px] text-brand-grayText block mb-1">체중 감량</span>
+                        <span class="text-base font-black text-sky-400">-2.7 kg</span>
+                    </div>
+                    <div class="bg-brand-black/40 p-3 rounded-xl border border-brand-border/40">
+                        <span class="text-[11px] text-brand-grayText block mb-1">골격근량 증가</span>
+                        <span class="text-base font-black text-brand-orange">+1.7 kg</span>
+                    </div>
+                    <div class="bg-brand-black/40 p-3 rounded-xl border border-brand-border/40">
+                        <span class="text-[11px] text-brand-grayText block mb-1">체지방량 감량</span>
+                        <span class="text-base font-black text-red-400">-6.1 kg</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-7 bg-brand-card border border-brand-border p-6 rounded-3xl">
+                <!-- 차트 필터 탭 시스템 -->
+                <div class="flex flex-wrap gap-2 mb-6 border-b border-brand-border/60 pb-4">
+                    <button id="btn-all" onclick="updateChartMode('all')" class="chart-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-orange text-white">
+                        <i class="fa-solid fa-chart-line mr-1"></i> 종합 분석
+                    </button>
+                    <button id="btn-weight" onclick="updateChartMode('weight')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        ⚖️ 몸무게
+                    </button>
+                    <button id="btn-muscle" onclick="updateChartMode('muscle')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        💪 골격근량
+                    </button>
+                    <button id="btn-fat" onclick="updateChartMode('fat')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        🔥 체지방량
+                    </button>
+                </div>
+                
+                <div class="relative h-80 w-full">
+                    <canvas id="weightGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 소개(WHO I AM) 섹션이 성장 일지 뒤로 이동하였습니다. -->
+    <section id="about" class="py-24 bg-brand-card/50 border-b border-brand-border">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <h2 class="text-xs font-bold text-brand-orange uppercase tracking-widest mb-3">WHO I AM</h2>
+            <h3 class="text-4xl font-extrabold mb-8 text-white">"나"는 어떤 사람인가요?</h3>
+            <div class="text-lg text-neutral-300 leading-relaxed space-y-6">
+                <p>무거운 덤벨도 들고, 시원한 맥주잔도 드는 <strong>김민우</strong>입니다.</p>
+                <p class="text-brand-orange font-bold text-xl">"건강과 먹는 즐거움을 모두 챙기듯, 개발도 꾸준함과 재미를 놓치지 않겠습니다."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta" class="py-24 bg-gradient-to-b from-brand-black to-brand-card/20 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <h3 class="text-4xl font-extrabold text-white mb-8">"죄책감 없이 맛있는 고기와 한 잔을 먹기 위한 첫 걸음, 저와 함께 해볼래요?"</h3>
+            <form id="ctaForm" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3 bg-brand-card p-2 rounded-2xl border border-brand-border shadow-2xl">
+                <input type="email" required id="ctaEmail" placeholder="함께 할 이메일 적기" class="bg-transparent text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-orange text-sm flex-grow" />
+                <button type="submit" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-extrabold px-6 py-3 rounded-xl text-sm transition-all">신청서 보내기 🚀</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="toast" class="fixed bottom-4 right-4 bg-brand-card border border-brand-orange text-white py-4 px-5 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <h5 class="text-sm font-bold" id="toastTitle">메시지</h5>
+    </div>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileDropdown = document.getElementById('mobileDropdown');
+        mobileMenuBtn.addEventListener('click', () => mobileDropdown.classList.toggle('hidden'));
+
+        // 모바일 메뉴 링크 클릭 시 드롭다운 닫기 동작 추가
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileDropdown.classList.add('hidden');
+            });
+        });
+
+        // 월별 신체 변화 데이터 사전 정의
+        const rawChartData = {
+            labels: ['1월', '3월', '5월', '7월', '9월', '11월'],
+            weight: [78.5, 77.8, 77.2, 76.8, 76.3, 75.8], // 체중 감소 추이
+            muscle: [34.5, 34.8, 35.1, 35.4, 35.8, 36.2], // 골격근 증가 추이
+            fat: [16.2, 15.0, 13.8, 12.6, 11.2, 10.1]    // 체지방 감소 추이
+        };
+
+        const ctx = document.getElementById('weightGrowthChart').getContext('2d');
+        
+        // 차트 디자인 프리셋 설정
+        const datasetsConfig = {
+            weight: {
+                label: '몸무게 (kg)',
+                data: rawChartData.weight,
+                borderColor: '#38bdf8', // 하늘색
+                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                borderWidth: 3,
+                tension: 0.35,
+                fill: true,
+                yAxisID: 'yWeight',
+                pointBackgroundColor: '#38bdf8'
+            },
+            muscle: {
+                label: '골격근량 (kg)',
+                data: rawChartData.muscle,
+                borderColor: '#f97316', // 브랜드 오렌지색
+                backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                borderWidth: 3,
+                tension: 0.35,
+                fill: true,
+                yAxisID: 'yMuscleFat',
+                pointBackgroundColor: '#f97316'
+            },
+            fat: {
+                label: '체지방량 (kg)',
+                data: rawChartData.fat,
+                borderColor: '#f87171', // 산호색 빨간색
+                backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                borderWidth: 3,
+                tension: 0.35,
+                fill: true,
+                yAxisID: 'yMuscleFat',
+                pointBackgroundColor: '#f87171'
+            }
+        };
+
+        // 초기 복합 그래프 생성
+        let growthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: rawChartData.labels,
+                datasets: [
+                    datasetsConfig.weight,
+                    datasetsConfig.muscle,
+                    datasetsConfig.fat
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#a3a3a3',
+                            font: { family: 'Pretendard', size: 11, weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e1e1e',
+                        titleColor: '#ffffff',
+                        bodyColor: '#e5e5e5',
+                        borderColor: '#2a2a2a',
+                        borderWidth: 1,
+                        padding: 10,
+                        bodyFont: { family: 'Pretendard' },
+                        titleFont: { family: 'Pretendard', weight: 'bold' }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(42, 42, 42, 0.4)' },
+                        ticks: { color: '#a3a3a3', font: { family: 'Pretendard' } }
+                    },
+                    yWeight: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        min: 70,
+                        max: 82,
+                        grid: { color: 'rgba(42, 42, 42, 0.4)' },
+                        ticks: { color: '#38bdf8', font: { family: 'Pretendard', weight: '600' } },
+                        title: {
+                            display: true,
+                            text: '몸무게 (kg)',
+                            color: '#38bdf8',
+                            font: { family: 'Pretendard', size: 10, weight: 'bold' }
+                        }
+                    },
+                    yMuscleFat: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 5,
+                        max: 42,
+                        grid: { drawOnChartArea: false }, // 격자선 중첩 방지
+                        ticks: { color: '#f97316', font: { family: 'Pretendard', weight: '600' } },
+                        title: {
+                            display: true,
+                            text: '근육량 / 체지방 (kg)',
+                            color: '#f97316',
+                            font: { family: 'Pretendard', size: 10, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 사용자가 선택한 탭에 반응하여 데이터셋과 Y축 구성을 가변적으로 렌더링하는 함수
+        window.updateChartMode = function(mode) {
+            // 모든 탭 버튼 상태 리셋
+            document.querySelectorAll('.chart-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-orange', 'text-white', 'active');
+                btn.classList.add('bg-brand-black', 'text-brand-grayText', 'border-brand-border');
+            });
+
+            // 선택한 탭 버튼 활성화
+            const activeBtn = document.getElementById(`btn-${mode}`);
+            activeBtn.classList.remove('bg-brand-black', 'text-brand-grayText', 'border-brand-border');
+            activeBtn.classList.add('bg-brand-orange', 'text-white', 'active');
+
+            if (mode === 'all') {
+                // 종합 데이터셋 전체 로드 및 양측 Y축 활성화
+                growthChart.data.datasets = [
+                    datasetsConfig.weight,
+                    datasetsConfig.muscle,
+                    datasetsConfig.fat
+                ];
+                growthChart.options.scales.yWeight.display = true;
+                growthChart.options.scales.yMuscleFat.display = true;
+            } else if (mode === 'weight') {
+                // 몸무게 전용 로드 및 좌측 Y축만 유지
+                growthChart.data.datasets = [datasetsConfig.weight];
+                growthChart.options.scales.yWeight.display = true;
+                growthChart.options.scales.yMuscleFat.display = false;
+            } else if (mode === 'muscle') {
+                // 골격근량 전용 로드 및 우측 Y축만 유지 (축 단위 눈금 조정)
+                growthChart.data.datasets = [{
+                    ...datasetsConfig.muscle,
+                    yAxisID: 'yMuscleFat'
+                }];
+                growthChart.options.scales.yWeight.display = false;
+                growthChart.options.scales.yMuscleFat.display = true;
+                growthChart.options.scales.yMuscleFat.min = 30;
+                growthChart.options.scales.yMuscleFat.max = 38;
+            } else if (mode === 'fat') {
+                // 체지방량 전용 로드 및 우측 Y축만 유지 (축 단위 눈금 조정)
+                growthChart.data.datasets = [{
+                    ...datasetsConfig.fat,
+                    yAxisID: 'yMuscleFat'
+                }];
+                growthChart.options.scales.yWeight.display = false;
+                growthChart.options.scales.yMuscleFat.display = true;
+                growthChart.options.scales.yMuscleFat.min = 8;
+                growthChart.options.scales.yMuscleFat.max = 18;
+            }
+
+            growthChart.update();
+        };
+
+        const toast = document.getElementById('toast');
+        const ctaForm = document.getElementById('ctaForm');
+        ctaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+            ctaForm.reset();
+        });
+    </script>
+</body>
+</html>
