@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINWOO.FIT | 상승 다이어트 성장일지</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#121212',
+                            card: '#1e1e1e',
+                            orange: '#f97316',
+                            orangeHover: '#ea580c',
+                            grayText: '#a3a3a3',
+                            border: '#2a2a2a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- 아이콘 라이브러리 및 차트 엔진 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght=300;400;500;700;900&family=Inter:wght=300;400;600;800&display=swap');
+        
+        body { background-color: #121212; color: #f5f5f5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
+
+        /* 물음표 상승 애니메이션 */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(var(--drift)) rotate(var(--rotation));
+                opacity: 0;
+            }
+        }
+
+        /* 클릭 파티클 애니메이션 */
+        @keyframes particleBlast {
+            0% {
+                transform: translate(-50%, -50%) translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.3) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        .floating-q {
+            position: absolute;
+            animation: floatUp var(--speed) linear infinite;
+            color: #f97316;
+            font-weight: 900;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .blast-particle {
+            position: absolute;
+            animation: particleBlast 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            color: #f97316;
+            font-weight: 900;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden pt-24 pb-12 selection:bg-brand-orange selection:text-white">
+
+<!-- 
+  ========================================================================
+  [공용 네비게이션 바 컴포넌트 사용 가이드]
+  1. 이 코드를 복사하여 각 페이지(index.html, routine.html 등)의 <body> 바로 아래에 붙여넣으세요.
+  2. 현재 보고 있는 페이지에 맞춰 아래 두 군데의 클래스를 수정해 주시면 됩니다.
+     - 데스크톱 메뉴: 해당 <a> 태그에 "text-brand-orange border-b-2 border-brand-orange pb-1" 추가
+     - 모바일 메뉴: 해당 <a> 태그에 "text-brand-orange bg-brand-orange/10 px-3 rounded-lg" 추가
+  ========================================================================
+-->
+
+<!-- 네비게이션 바 시작 -->
+<nav class="fixed top-0 left-0 w-full z-40 bg-[#121212]/90 backdrop-blur-md border-b border-[#2a2a2a] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <!-- 로고 영역 -->
+        <a href="index.html" class="text-xl sm:text-2xl font-black tracking-wider flex items-center gap-2 text-white">
+            <span class="text-[#f97316]"><i class="fa-solid fa-dumbbell"></i></span>
+            MINWOO<span class="text-[#f97316]">.</span>FIT
+        </a>
+
+        <!-- 데스크톱 네비게이션 링크 (PC 화면용) -->
+        <div class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold tracking-wide">
+            <!-- 
+              [PC 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] border-b-2 border-[#f97316] pb-1
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] transition-colors
+            -->
+            <a href="routine.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">운동 루틴</a>
+            <a href="growth.html" class="text-[#f97316] border-b-2 border-[#f97316] pb-1 font-bold">성장일지</a>
+            <a href="diet.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">WHO I AM</a>
+        </div>
+
+        <!-- 우측 액션 버튼 및 모바일 햄버거 버튼 -->
+        <div class="flex items-center gap-3">
+            <a href="#cta" class="hidden sm:inline-block bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-5 rounded-full text-xs sm:text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+                함께 시작하기
+            </a>
+            <!-- 모바일 토글 버튼 (아이콘이 동적으로 변경됨) -->
+            <button id="navToggleBtn" class="md:hidden text-white focus:outline-none p-1.5 text-xl hover:text-[#f97316] transition-colors" aria-label="메뉴 토글">
+                <i class="fa-solid fa-bars" id="toggleIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 모바일 드롭다운 메뉴 (기본값: 숨김) -->
+    <div id="navMobileMenu" class="hidden md:hidden bg-[#121212]/95 border-b border-[#2a2a2a] px-6 py-4 transition-all duration-300">
+        <div class="flex flex-col gap-3 text-sm font-semibold py-2">
+            <!-- 
+              [모바일 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all
+            -->
+            <a href="routine.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">운동 루틴</a>
+            <a href="growth.html" class="text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold">성장일지</a>
+            <a href="diet.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">WHO I AM</a>
+        </div>
+    </div>
+</nav>
+<!-- 네비게이션 바 끝 -->
+
+<!-- 모바일 메뉴 동작을 위한 경량 자바스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById('navToggleBtn');
+        const mobileMenu = document.getElementById('navMobileMenu');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        // 토글 버튼 클릭 이벤트
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isHidden = mobileMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // 메뉴 열기
+                mobileMenu.classList.remove('hidden');
+                toggleIcon.classList.remove('fa-bars');
+                toggleIcon.classList.add('fa-xmark');
+            } else {
+                // 메뉴 닫기
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+
+        // 화면 다른 곳을 클릭하면 모바일 메뉴 닫기
+        document.addEventListener('click', function(e) {
+            if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+    });
+</script>
+
+<header class="py-16 bg-gradient-to-b from-brand-black via-[#161616] to-[#121212] text-center border-b border-brand-border/60">
+    <div class="max-w-4xl mx-auto px-4">
+        <span class="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+            <i class="fa-solid fa-chart-line animate-bounce"></i> MINWOO BODY PROGRESS
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+            맛있게 먹고도 이루어 낸 <span class="text-brand-orange">상승 다이어트</span>
+        </h1>
+        <p class="text-sm sm:text-base text-brand-grayText max-w-xl mx-auto leading-relaxed">
+            "저렇게 잘 먹으면서 몸 관리가 되나요?" 네, 가능합니다. 정직한 고강도 트레이닝을 통해 근육은 늘리고 체지방은 불태웠습니다.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <!-- 인바디 대시보드 그리드 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-12">
+        
+        <!-- 왼쪽: 통계치 요약 패널 -->
+        <div class="lg:col-span-4 flex flex-col justify-between gap-6">
+            <div class="bg-brand-card border border-brand-border p-6 rounded-2xl shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-heart-pulse text-brand-orange"></i> 핵심 인바디 스코어
+                </h3>
+                <p class="text-xs text-brand-grayText leading-relaxed mb-6">
+                    지속가능한 식단 조절과 효율적인 4분할 훈련의 결과입니다. 극단적 단식을 배제한 건강한 변화 지표입니다.
+                </p>
+                
+                <div class="space-y-4">
+                    <div class="bg-brand-black/40 p-4 rounded-xl border border-brand-border/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-brand-grayText block mb-0.5">체중 변화</span>
+                            <span class="text-xs text-neutral-400">1월 대비 현재</span>
+                        </div>
+                        <span class="text-xl font-black text-sky-400">-2.7 kg</span>
+                    </div>
+                    <div class="bg-brand-black/40 p-4 rounded-xl border border-brand-border/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-brand-grayText block mb-0.5">골격근량 증가</span>
+                            <span class="text-xs text-neutral-400">순수 근질 상승</span>
+                        </div>
+                        <span class="text-xl font-black text-brand-orange">+1.7 kg</span>
+                    </div>
+                    <div class="bg-brand-black/40 p-4 rounded-xl border border-brand-border/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-brand-grayText block mb-0.5">체지방량 감소</span>
+                            <span class="text-xs text-neutral-400">내장 및 피하지방 컷</span>
+                        </div>
+                        <span class="text-xl font-black text-red-400">-6.1 kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 물음표 공간 진입 가이드 카드 -->
+            <div id="mysteryTriggerCard" onclick="handleMysteryTrigger()" class="bg-gradient-to-r from-brand-orange/10 via-brand-orange/5 to-transparent border border-brand-orange/40 hover:border-brand-orange p-6 rounded-2xl shadow-xl transition-all cursor-pointer relative group overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-brand-orange/5 rounded-full blur-xl group-hover:bg-brand-orange/10 transition-all"></div>
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl text-brand-orange animate-pulse">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-bold text-white group-hover:text-brand-orange transition-colors">성장일지의 비밀 분석 공간</h4>
+                            <span id="guidePulseBadge" class="inline-flex h-2 w-2 rounded-full bg-brand-orange animate-ping"></span>
+                        </div>
+                        <p class="text-xs text-brand-grayText leading-relaxed">
+                            이 카드를 클릭하면 성장 수치 뒤에 가려진 깊은 생각과 무수히 스쳐갔던 질문들이 모인 입체 미스테리 시각 공간으로 진입합니다. (최초 1회 한정)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽: 분석 차트 메인 그래픽스 -->
+        <div class="lg:col-span-8 bg-brand-card border border-brand-border p-6 rounded-3xl shadow-xl flex flex-col justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-brand-border/60 pb-4">
+                <div class="flex flex-wrap gap-2">
+                    <button id="btn-all" onclick="updateChartMode('all')" class="chart-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-orange text-white">
+                        <i class="fa-solid fa-chart-line mr-1"></i> 종합 분석
+                    </button>
+                    <button id="btn-weight" onclick="updateChartMode('weight')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        ⚖️ 몸무게
+                    </button>
+                    <button id="btn-muscle" onclick="updateChartMode('muscle')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        💪 골격근량
+                    </button>
+                    <button id="btn-fat" onclick="updateChartMode('fat')" class="chart-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-brand-black text-brand-grayText border border-brand-border hover:text-white">
+                        🔥 체지방량
+                    </button>
+                </div>
+                <span class="text-xs text-brand-grayText font-medium"><i class="fa-solid fa-clock-rotate-left mr-1"></i>최근 12개월 추이</span>
+            </div>
+            
+            <div class="relative h-[320px] w-full">
+                <canvas id="weightGrowthChart"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 하단 CTA 섹션 -->
+<section id="cta" class="py-20 text-center relative bg-gradient-to-t from-brand-black to-brand-card/10 border-t border-brand-border/40">
+    <div class="max-w-4xl mx-auto px-6">
+        <h3 class="text-3xl font-extrabold text-white mb-6">"나만의 멋진 건강 포트폴리오를 만들어보세요."</h3>
+        <p class="text-xs sm:text-sm text-brand-grayText mb-8 max-w-md mx-auto">
+            김민우와 함께 실용적인 쇠질 전략을 공유하고 죄책감 없이 즐거운 주말 치팅을 함께 기획합시다.
+        </p>
+        <form id="ctaForm" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3 bg-brand-card p-2 rounded-2xl border border-brand-border shadow-2xl">
+            <input type="email" required id="ctaEmail" placeholder="메일 주소 입력" class="bg-transparent text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-orange text-sm flex-grow" />
+            <button type="submit" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-extrabold px-6 py-3 rounded-xl text-sm transition-all">가이드 무료 구독 🚀</button>
+        </form>
+    </div>
+</section>
+
+<!-- 토스트 알림 컴포넌트 -->
+<div id="toast" class="fixed bottom-6 right-6 bg-brand-card border border-brand-orange text-white py-4 px-6 rounded-2xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-[100]">
+    <h5 class="text-sm font-bold" id="toastTitle">메시지</h5>
+</div>
+
+<!-- 미스테리 팝업 오버레이 (설명 없이 오직 물음표들만 자유롭게 유영) -->
+<div id="mysteryOverlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex-col items-center justify-center overflow-hidden cursor-crosshair">
+    <!-- 닫기 버튼 -->
+    <button onclick="closeMysteryOverlay()" class="absolute top-6 right-6 text-white/50 hover:text-white bg-white/10 hover:bg-white/20 p-4 rounded-full text-xl transition-all z-[110]" aria-label="닫기">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+</div>
+
+<script>
+    // ------------------ Chart.js 설정 로직 ------------------
+    const rawChartData = {
+        labels: ['1월', '3월', '5월', '7월', '9월', '11월'],
+        weight: [78.5, 77.8, 77.2, 76.8, 76.3, 75.8],
+        muscle: [34.5, 34.8, 35.1, 35.4, 35.8, 36.2],
+        fat: [16.2, 15.0, 13.8, 12.6, 11.2, 10.1]
+    };
+
+    const ctx = document.getElementById('weightGrowthChart').getContext('2d');
+    
+    const datasetsConfig = {
+        weight: {
+            label: '몸무게 (kg)',
+            data: rawChartData.weight,
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.08)',
+            borderWidth: 3,
+            tension: 0.35,
+            fill: true,
+            yAxisID: 'yWeight',
+            pointBackgroundColor: '#38bdf8',
+            pointRadius: 4
+        },
+        muscle: {
+            label: '골격근량 (kg)',
+            data: rawChartData.muscle,
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249, 115, 22, 0.08)',
+            borderWidth: 3,
+            tension: 0.35,
+            fill: true,
+            yAxisID: 'yMuscleFat',
+            pointBackgroundColor: '#f97316',
+            pointRadius: 4
+        },
+        fat: {
+            label: '체지방량 (kg)',
+            data: rawChartData.fat,
+            borderColor: '#f87171',
+            backgroundColor: 'rgba(248, 113, 113, 0.08)',
+            borderWidth: 3,
+            tension: 0.35,
+            fill: true,
+            yAxisID: 'yMuscleFat',
+            pointBackgroundColor: '#f87171',
+            pointRadius: 4
+        }
+    };
+
+    let growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: rawChartData.labels,
+            datasets: [
+                datasetsConfig.weight,
+                datasetsConfig.muscle,
+                datasetsConfig.fat
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#a3a3a3',
+                        font: { family: 'Pretendard', size: 11, weight: 'bold' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#1e1e1e',
+                    titleColor: '#ffffff',
+                    bodyColor: '#e5e5e5',
+                    borderColor: '#2a2a2a',
+                    borderWidth: 1,
+                    padding: 10,
+                    bodyFont: { family: 'Pretendard' }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(42, 42, 42, 0.4)' },
+                    ticks: { color: '#a3a3a3', font: { family: 'Pretendard' } }
+                },
+                yWeight: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    min: 70,
+                    max: 82,
+                    grid: { color: 'rgba(42, 42, 42, 0.4)' },
+                    ticks: { color: '#38bdf8', font: { family: 'Pretendard', weight: '600' } }
+                },
+                yMuscleFat: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    min: 5,
+                    max: 42,
+                    grid: { drawOnChartArea: false },
+                    ticks: { color: '#f97316', font: { family: 'Pretendard', weight: '600' } }
+                }
+            }
+        }
+    });
+
+    window.updateChartMode = function(mode) {
+        document.querySelectorAll('.chart-tab-btn').forEach(btn => {
+            btn.classList.remove('bg-brand-orange', 'text-white', 'active');
+            btn.classList.add('bg-brand-black', 'text-brand-grayText', 'border-brand-border');
+        });
+
+        const activeBtn = document.getElementById(`btn-${mode}`);
+        activeBtn.classList.remove('bg-brand-black', 'text-brand-grayText', 'border-brand-border');
+        activeBtn.classList.add('bg-brand-orange', 'text-white', 'active');
+
+        if (mode === 'all') {
+            growthChart.data.datasets = [
+                datasetsConfig.weight,
+                datasetsConfig.muscle,
+                datasetsConfig.fat
+            ];
+            growthChart.options.scales.yWeight.display = true;
+            growthChart.options.scales.yMuscleFat.display = true;
+        } else if (mode === 'weight') {
+            growthChart.data.datasets = [datasetsConfig.weight];
+            growthChart.options.scales.yWeight.display = true;
+            growthChart.options.scales.yMuscleFat.display = false;
+        } else if (mode === 'muscle') {
+            growthChart.data.datasets = [{
+                ...datasetsConfig.muscle,
+                yAxisID: 'yMuscleFat'
+            }];
+            growthChart.options.scales.yWeight.display = false;
+            growthChart.options.scales.yMuscleFat.display = true;
+            growthChart.options.scales.yMuscleFat.min = 30;
+            growthChart.options.scales.yMuscleFat.max = 38;
+        } else if (mode === 'fat') {
+            growthChart.data.datasets = [{
+                ...datasetsConfig.fat,
+                yAxisID: 'yMuscleFat'
+            }];
+            growthChart.options.scales.yWeight.display = false;
+            growthChart.options.scales.yMuscleFat.display = true;
+            growthChart.options.scales.yMuscleFat.min = 8;
+            growthChart.options.scales.yMuscleFat.max = 18;
+        }
+        growthChart.update();
+    };
+
+    // ------------------ STREAMING_CHUNK: Coding the single-execution Mystery Pop-Up core... ------------------
+    let spawnTimer = null;
+
+    // 성장일지 비밀 공간 일회성 실행 핸들러
+    function handleMysteryTrigger() {
+        const opened = localStorage.getItem('growth_mystery_opened');
+        
+        if (opened === 'true') {
+            showToast("💡 비밀 공간은 이미 탐험하셨습니다! 성장 지표 분석에 집중해 주세요.");
+            return;
+        }
+
+        // 일회성 저장 완료
+        localStorage.setItem('growth_mystery_opened', 'true');
+        
+        // 트리거 카드 시각 효과 정리 (안내 배너 숨김 처리 및 커서 변경)
+        const triggerCard = document.getElementById('mysteryTriggerCard');
+        const pulseBadge = document.getElementById('guidePulseBadge');
+        if (pulseBadge) pulseBadge.remove();
+        if (triggerCard) {
+            triggerCard.classList.remove('cursor-pointer', 'from-brand-orange/10');
+            triggerCard.classList.add('cursor-default');
+        }
+
+        // 물음표 유영 공간 활성화
+        openMysteryOverlay();
+    }
+
+    // 미스테리 오버레이 열기
+    function openMysteryOverlay() {
+        const overlay = document.getElementById('mysteryOverlay');
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+
+        // 지속적으로 물음표가 위로 둥둥 떠다니는 애니메이션 생성 루프
+        spawnTimer = setInterval(spawnFloatingQuestionMark, 150);
+
+        // 전체화면 아무데나 클릭 시 화려한 분사 효과 연계
+        overlay.addEventListener('mousedown', spawnBurstParticles);
+        overlay.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            spawnBurstParticles({ clientX: touch.clientX, clientY: touch.clientY });
+        });
+    }
+
+    // 미스테리 오버레이 닫기
+    function closeMysteryOverlay() {
+        const overlay = document.getElementById('mysteryOverlay');
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+
+        // 백그라운드 스폰 루프 중단 및 기존 떠다니던 마크 폐기
+        if (spawnTimer) clearInterval(spawnTimer);
+        document.querySelectorAll('.floating-q').forEach(el => el.remove());
+        document.querySelectorAll('.blast-particle').forEach(el => el.remove());
+    }
+
+    // 둥둥 떠서 올라가는 물음표 객체 1개 동적 생성
+    function spawnFloatingQuestionMark() {
+        const overlay = document.getElementById('mysteryOverlay');
+        if (!overlay || overlay.classList.contains('hidden')) return;
+
+        const q = document.createElement('div');
+        q.className = 'floating-q';
+        q.innerText = '?';
+
+        // 크기, 수평 위치, 드리프트 반경, 회전 각도, 상승 속도 랜덤 부여
+        const size = Math.random() * 48 + 18; // 18px ~ 66px
+        const opacity = Math.random() * 0.4 + 0.1; // 은은하게 흐리게
+        const speed = Math.random() * 5 + 4; // 4s ~ 9s
+        const rotation = Math.random() * 360 - 180; // -180deg ~ 180deg
+        const drift = Math.random() * 100 - 50; // -50px ~ 50px
+        const startX = Math.random() * 100; // 0% ~ 100%
+
+        q.style.left = startX + 'vw';
+        q.style.fontSize = size + 'px';
+        q.style.opacity = opacity;
+        q.style.setProperty('--speed', speed + 's');
+        q.style.setProperty('--rotation', rotation + 'deg');
+        q.style.setProperty('--drift', drift + 'px');
+
+        overlay.appendChild(q);
+
+        // 애니메이션 수명이 끝난 요소는 가비지 컬렉터 회수 지원용으로 즉시 소멸
+        setTimeout(() => q.remove(), speed * 1000);
+    }
+
+    // 마우스/터치 클릭 좌표 기반 물음표 파티클 사방 폭발 분사
+    function spawnBurstParticles(e) {
+        // 닫기 버튼 영역 클릭 시 폭발 방지
+        if (e.target.closest('button')) return;
+
+        const overlay = document.getElementById('mysteryOverlay');
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+
+        const particleCount = 18; // 한 번 클릭할 때 18개씩 생성
+
+        for (let i = 0; i < particleCount; i++) {
+            const p = document.createElement('div');
+            p.className = 'blast-particle';
+            p.innerText = '?';
+
+            // 사방 360도로 터져나가는 벡터 거리 계산
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 220 + 80; // 80px ~ 300px
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            const size = Math.random() * 24 + 14; // 14px ~ 38px
+            const rot = Math.random() * 360 - 180;
+
+            p.style.left = clickX + 'px';
+            p.style.top = clickY + 'px';
+            p.style.fontSize = size + 'px';
+            p.style.setProperty('--tx', tx + 'px');
+            p.style.setProperty('--ty', ty + 'px');
+            p.style.setProperty('--rot', rot + 'deg');
+
+            overlay.appendChild(p);
+
+            // 애니메이션 수명이 끝난 파티클 완전 자동 소멸
+            setTimeout(() => p.remove(), 1200);
+        }
+    }
+
+    // ------------------ 토스트 알림 작동 로직 ------------------
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        toastTitle.innerText = message;
+        
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        
+        setTimeout(() => { 
+            toast.classList.add('translate-y-24', 'opacity-0'); 
+            toast.classList.remove('translate-y-0', 'opacity-100');
+        }, 3000);
+    }
+
+    // 페이지 로드 시 기존 탐색 완료 이력이 있다면 성장일지 가이드 배너의 펄스 효과 사전 소멸
+    document.addEventListener("DOMContentLoaded", function() {
+        const opened = localStorage.getItem('growth_mystery_opened');
+        if (opened === 'true') {
+            const pulseBadge = document.getElementById('guidePulseBadge');
+            const triggerCard = document.getElementById('mysteryTriggerCard');
+            if (pulseBadge) pulseBadge.remove();
+            if (triggerCard) {
+                triggerCard.classList.remove('cursor-pointer', 'from-brand-orange/10');
+                triggerCard.classList.add('cursor-default');
+            }
+        }
+    });
+
+    // 구독 폼 제출 핸들러
+    const ctaForm = document.getElementById('ctaForm');
+    ctaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast("📧 성장 레포트가 메일로 정기 발송됩니다. 가득 채운 보람을 느껴보세요!");
+        ctaForm.reset();
+    });
+</script>
+</body>
+</html>

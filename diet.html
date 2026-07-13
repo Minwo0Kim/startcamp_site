@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINWOO.FIT | 치팅데이 반전 식단</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#121212',
+                            card: '#1e1e1e',
+                            orange: '#f97316',
+                            orangeHover: '#ea580c',
+                            grayText: '#a3a3a3',
+                            border: '#2a2a2a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght=300;400;500;700;900&family=Inter:wght=300;400;600;800&display=swap');
+        
+        body { background-color: #121212; color: #f5f5f5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden pt-24 pb-12 selection:bg-brand-orange selection:text-white">
+
+<!-- 
+  ========================================================================
+  [공용 네비게이션 바 컴포넌트 사용 가이드]
+  1. 이 코드를 복사하여 각 페이지(index.html, routine.html 등)의 <body> 바로 아래에 붙여넣으세요.
+  2. 현재 보고 있는 페이지에 맞춰 아래 두 군데의 클래스를 수정해 주시면 됩니다.
+     - 데스크톱 메뉴: 해당 <a> 태그에 "text-brand-orange border-b-2 border-brand-orange pb-1" 추가
+     - 모바일 메뉴: 해당 <a> 태그에 "text-brand-orange bg-brand-orange/10 px-3 rounded-lg" 추가
+  ========================================================================
+-->
+
+<!-- 네비게이션 바 시작 -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-[#121212]/90 backdrop-blur-md border-b border-[#2a2a2a] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <!-- 로고 영역 -->
+        <a href="index.html" class="text-xl sm:text-2xl font-black tracking-wider flex items-center gap-2 text-white">
+            <span class="text-[#f97316]"><i class="fa-solid fa-dumbbell"></i></span>
+            MINWOO<span class="text-[#f97316]">.</span>FIT
+        </a>
+
+        <!-- 데스크톱 네비게이션 링크 (PC 화면용) -->
+        <div class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold tracking-wide">
+            <!-- 
+              [PC 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] border-b-2 border-[#f97316] pb-1
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] transition-colors
+            -->
+            <a href="routine.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">운동 루틴</a>
+            <a href="growth.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">성장일지</a>
+            <a href="diet.html" class="text-[#f97316] border-b-2 border-[#f97316] pb-1 font-bold">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">WHO I AM</a>
+        </div>
+
+        <!-- 우측 액션 버튼 및 모바일 햄버거 버튼 -->
+        <div class="flex items-center gap-3">
+            <a href="#cta" class="hidden sm:inline-block bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-5 rounded-full text-xs sm:text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+                함께 시작하기
+            </a>
+            <!-- 모바일 토글 버튼 (아이콘이 동적으로 변경됨) -->
+            <button id="navToggleBtn" class="md:hidden text-white focus:outline-none p-1.5 text-xl hover:text-[#f97316] transition-colors" aria-label="메뉴 토글">
+                <i class="fa-solid fa-bars" id="toggleIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 모바일 드롭다운 메뉴 (기본값: 숨김) -->
+    <div id="navMobileMenu" class="hidden md:hidden bg-[#121212]/95 border-b border-[#2a2a2a] px-6 py-4 transition-all duration-300">
+        <div class="flex flex-col gap-3 text-sm font-semibold py-2">
+            <!-- 
+              [모바일 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all
+            -->
+            <a href="routine.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">운동 루틴</a>
+            <a href="growth.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">성장일지</a>
+            <a href="diet.html" class="text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">WHO I AM</a>
+        </div>
+    </div>
+</nav>
+<!-- 네비게이션 바 끝 -->
+
+<!-- 모바일 메뉴 동작을 위한 경량 자바스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById('navToggleBtn');
+        const mobileMenu = document.getElementById('navMobileMenu');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        // 토글 버튼 클릭 이벤트
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isHidden = mobileMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // 메뉴 열기
+                mobileMenu.classList.remove('hidden');
+                toggleIcon.classList.remove('fa-bars');
+                toggleIcon.classList.add('fa-xmark');
+            } else {
+                // 메뉴 닫기
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+
+        // 화면 다른 곳을 클릭하면 모바일 메뉴 닫기
+        document.addEventListener('click', function(e) {
+            if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+    });
+</script>
+
+<header class="py-16 bg-gradient-to-b from-brand-black via-[#161616] to-[#121212] text-center border-b border-brand-border/60">
+    <div class="max-w-4xl mx-auto px-4">
+        <span class="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+            <i class="fa-solid fa-utensils"></i> CHEAT DAY DIET
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+            "이 맛에 땀 흘립니다!" <span class="text-brand-orange">치팅데이 반전 식단</span> 🥩
+        </h1>
+        <p class="text-sm sm:text-base text-brand-grayText max-w-xl mx-auto leading-relaxed">
+            평일의 정직한 노력 끝에 찾아오는 최고의 보상. 말뿐인 닭가슴살 식단표가 아닌, 진짜 영양과 도파민이 폭발하는 보물 같은 순간들입니다.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+    <!-- 모바일 환경에서는 가로 스크롤, 데스크톱에서는 5열 카드 스프레드 레이아웃 -->
+    <div class="flex overflow-x-auto md:overflow-x-visible md:grid md:grid-cols-5 md:gap-2 md:justify-center md:items-center py-10 px-4 md:px-0 no-scrollbar gap-6 snap-x snap-mandatory">
+        
+        <!-- 카드 1 (모듬회) -->
+        <div class="snap-center shrink-0 w-[280px] md:w-auto bg-[#1e1e1e] border border-brand-orange/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 md:-rotate-12 md:hover:rotate-0 md:hover:-translate-y-8 z-10 aspect-[3/4] group">
+            <div class="w-full h-full relative overflow-hidden">
+                <img src="image_843977.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&auto=format&fit=crop&q=80';" alt="모듬회" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <!-- 이미지 위 어두운 그래디언트 오버레이 -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <!-- 하단 메뉴 태그 표시 (텍스트 정보 최소화) -->
+                <div class="absolute bottom-5 left-5 right-5">
+                    <span class="px-3 py-1 bg-brand-orange/90 text-white font-extrabold text-[11px] rounded-lg tracking-wide shadow-md">
+                        Premium Raw Fish 🐟
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 카드 2 (등갈비 폭립) -->
+        <div class="snap-center shrink-0 w-[280px] md:w-auto bg-[#1e1e1e] border border-brand-orange/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 md:-rotate-6 md:hover:rotate-0 md:hover:-translate-y-8 z-20 aspect-[3/4] group">
+            <div class="w-full h-full relative overflow-hidden">
+                <img src="image_84397f.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80';" alt="등갈비 폭립" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <div class="absolute bottom-5 left-5 right-5">
+                    <span class="px-3 py-1 bg-brand-orange/90 text-white font-extrabold text-[11px] rounded-lg tracking-wide shadow-md">
+                        Spicy BBQ Ribs 🍖
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 카드 3 (삼겹살) -->
+        <div class="snap-center shrink-0 w-[280px] md:w-auto bg-[#1e1e1e] border border-brand-orange/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 md:rotate-0 md:hover:-translate-y-8 z-30 aspect-[3/4] group">
+            <div class="w-full h-full relative overflow-hidden">
+                <img src="image_84399d.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80';" alt="삼겹살과 목살" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <div class="absolute bottom-5 left-5 right-5">
+                    <span class="px-3 py-1 bg-brand-orange/90 text-white font-extrabold text-[11px] rounded-lg tracking-wide shadow-md">
+                        Pork Belly Grill 🥓
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 카드 4 (차슈 라멘) -->
+        <div class="snap-center shrink-0 w-[280px] md:w-auto bg-[#1e1e1e] border border-brand-orange/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 md:rotate-6 md:hover:rotate-0 md:hover:-translate-y-8 z-20 aspect-[3/4] group">
+            <div class="w-full h-full relative overflow-hidden">
+                <img src="image_8439d5.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80';" alt="차슈 라멘" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <div class="absolute bottom-5 left-5 right-5">
+                    <span class="px-3 py-1 bg-brand-orange/90 text-white font-extrabold text-[11px] rounded-lg tracking-wide shadow-md">
+                        Tonkotsu Ramen 🍜
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 카드 5 (대하 소금구이) -->
+        <div class="snap-center shrink-0 w-[280px] md:w-auto bg-[#1e1e1e] border border-brand-orange/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 md:rotate-12 md:hover:rotate-0 md:hover:-translate-y-8 z-10 aspect-[3/4] group">
+            <div class="w-full h-full relative overflow-hidden">
+                <img src="image_8439dc.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1559737607-3f05499f5a9b?w=600&auto=format&fit=crop&q=80';" alt="대하 소금구이" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <div class="absolute bottom-5 left-5 right-5">
+                    <span class="px-3 py-1 bg-brand-orange/90 text-white font-extrabold text-[11px] rounded-lg tracking-wide shadow-md">
+                        Salted Grilled Shrimp 🦐
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</main>
+
+<section id="cta" class="py-20 text-center relative bg-gradient-to-t from-brand-black to-brand-card/10 border-t border-brand-border/40">
+    <div class="max-w-4xl mx-auto px-6">
+        <h3 class="text-3xl font-extrabold text-white mb-6">"함께 신나게 땀 흘리고, 맛있는 일상을 나누실래요?"</h3>
+        <p class="text-xs sm:text-sm text-brand-grayText mb-8 max-w-md mx-auto">
+            정직하게 운동하고 기분 좋게 치팅하는 지속가능한 건강 관리 가이드를 구독해 보세요.
+        </p>
+        <form id="ctaForm" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3 bg-brand-card p-2 rounded-2xl border border-brand-border shadow-2xl">
+            <input type="email" required id="ctaEmail" placeholder="메일 주소 입력" class="bg-transparent text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-orange text-sm flex-grow" />
+            <button type="submit" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-extrabold px-6 py-3 rounded-xl text-sm transition-all">가이드 무료 구독 🚀</button>
+        </form>
+    </div>
+</section>
+
+<!-- 토스트 알림 컴포넌트 -->
+<div id="toast" class="fixed bottom-6 right-6 bg-brand-card border border-brand-orange text-white py-4 px-6 rounded-2xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-[100]">
+    <h5 class="text-sm font-bold" id="toastTitle">메시지</h5>
+</div>
+
+<script>
+    // 토스트 작동 유틸리티 함수
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        toastTitle.innerText = message;
+        
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        
+        setTimeout(() => { 
+            toast.classList.add('translate-y-24', 'opacity-0'); 
+            toast.classList.remove('translate-y-0', 'opacity-100');
+        }, 3000);
+    }
+
+    // 구독 폼 제출 핸들러
+    const ctaForm = document.getElementById('ctaForm');
+    ctaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast("📧 식단과 어우러지는 건강 밸런스 소식이 메일로 전달됩니다!");
+        ctaForm.reset();
+    });
+</script>
+</body>
+</html>

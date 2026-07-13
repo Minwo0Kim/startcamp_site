@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINWOO.FIT | 요일별 스마트 4분할 루틴</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#121212',
+                            card: '#1e1e1e',
+                            orange: '#f97316',
+                            orangeHover: '#ea580c',
+                            grayText: '#a3a3a3',
+                            border: '#2a2a2a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght=300;400;600;800&display=swap');
+        
+        body { background-color: #121212; color: #f5f5f5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden pt-24 pb-12 selection:bg-brand-orange selection:text-white">
+
+<!-- 
+  ========================================================================
+  [공용 네비게이션 바 컴포넌트 사용 가이드]
+  1. 이 코드를 복사하여 각 페이지(index.html, routine.html 등)의 <body> 바로 아래에 붙여넣으세요.
+  2. 현재 보고 있는 페이지에 맞춰 아래 두 군데의 클래스를 수정해 주시면 됩니다.
+     - 데스크톱 메뉴: 해당 <a> 태그에 "text-brand-orange border-b-2 border-brand-orange pb-1" 추가
+     - 모바일 메뉴: 해당 <a> 태그에 "text-brand-orange bg-brand-orange/10 px-3 rounded-lg" 추가
+  ========================================================================
+-->
+
+<!-- 네비게이션 바 시작 -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-[#121212]/90 backdrop-blur-md border-b border-[#2a2a2a] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <!-- 로고 영역 -->
+        <a href="index.html" class="text-xl sm:text-2xl font-black tracking-wider flex items-center gap-2 text-white">
+            <span class="text-[#f97316]"><i class="fa-solid fa-dumbbell"></i></span>
+            MINWOO<span class="text-[#f97316]">.</span>FIT
+        </a>
+
+        <!-- 데스크톱 네비게이션 링크 (PC 화면용) -->
+        <div class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold tracking-wide">
+            <!-- 
+              [PC 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] border-b-2 border-[#f97316] pb-1
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] transition-colors
+            -->
+            <a href="routine.html" class="text-[#f97316] border-b-2 border-[#f97316] pb-1 font-bold">운동 루틴</a>
+            <a href="growth.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">성장일지</a>
+            <a href="diet.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] transition-colors">WHO I AM</a>
+        </div>
+
+        <!-- 우측 액션 버튼 및 모바일 햄버거 버튼 -->
+        <div class="flex items-center gap-3">
+            <a href="#cta" class="hidden sm:inline-block bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-5 rounded-full text-xs sm:text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+                함께 시작하기
+            </a>
+            <!-- 모바일 토글 버튼 (아이콘이 동적으로 변경됨) -->
+            <button id="navToggleBtn" class="md:hidden text-white focus:outline-none p-1.5 text-xl hover:text-[#f97316] transition-colors" aria-label="메뉴 토글">
+                <i class="fa-solid fa-bars" id="toggleIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 모바일 드롭다운 메뉴 (기본값: 숨김) -->
+    <div id="navMobileMenu" class="hidden md:hidden bg-[#121212]/95 border-b border-[#2a2a2a] px-6 py-4 transition-all duration-300">
+        <div class="flex flex-col gap-3 text-sm font-semibold py-2">
+            <!-- 
+              [모바일 활성화 클래스 적용 팁]
+              - 활성 상태: text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold
+              - 비활성 상태: text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all
+            -->
+            <a href="routine.html" class="text-[#f97316] bg-[#f97316]/10 px-3 py-2 rounded-lg font-bold">운동 루틴</a>
+            <a href="growth.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">성장일지</a>
+            <a href="diet.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">반전식단</a>
+            <a href="about.html" class="text-neutral-300 hover:text-[#f97316] hover:bg-neutral-800/40 px-3 py-2 rounded-lg transition-all">WHO I AM</a>
+        </div>
+    </div>
+</nav>
+<!-- 네비게이션 바 끝 -->
+
+<!-- 모바일 메뉴 동작을 위한 경량 자바스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById('navToggleBtn');
+        const mobileMenu = document.getElementById('navMobileMenu');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        // 토글 버튼 클릭 이벤트
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isHidden = mobileMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // 메뉴 열기
+                mobileMenu.classList.remove('hidden');
+                toggleIcon.classList.remove('fa-bars');
+                toggleIcon.classList.add('fa-xmark');
+            } else {
+                // 메뉴 닫기
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+
+        // 화면 다른 곳을 클릭하면 모바일 메뉴 닫기
+        document.addEventListener('click', function(e) {
+            if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                toggleIcon.classList.remove('fa-xmark');
+                toggleIcon.classList.add('fa-bars');
+            }
+        });
+    });
+</script>
+
+<header class="py-16 bg-gradient-to-b from-brand-black via-[#161616] to-[#121212] text-center border-b border-brand-border/60">
+    <div class="max-w-4xl mx-auto px-4">
+        <span class="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+            <i class="fa-solid fa-calendar-check"></i> MINWOO WORKOUT ROUTINE
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+            민우의 실속 요일별 <span class="text-brand-orange">4분할 루틴</span>
+        </h1>
+        <p class="text-sm sm:text-base text-brand-grayText max-w-xl mx-auto leading-relaxed">
+            과장되거나 무리한 세트는 제외했습니다. 직장인, 개발자, 현대인을 위해 가장 효율적으로 타격할 수 있는 실속 압축 루틴입니다.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- LEFT COLUMN: 요일별 루틴 상세 카드 (8/12) -->
+    <div class="lg:col-span-8 space-y-8">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="w-2.5 h-6 bg-brand-orange rounded-full"></span>요일별 운동 정보 및 세트수
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Day 1: 가슴 루틴 -->
+            <div class="bg-brand-card border border-brand-border hover:border-brand-orange/40 rounded-2xl p-6 transition-all shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-black text-brand-orange uppercase bg-brand-orange/10 px-3 py-1 rounded-full">Day 1</span>
+                    <span class="text-lg text-brand-orange"><i class="fa-solid fa-shield-halved"></i></span>
+                </div>
+                <h3 class="text-xl font-black text-white mb-1">가슴 루틴 (Chest)</h3>
+                <p class="text-xs text-brand-grayText mb-4">입체적인 대흉근 상·하부 및 협동근 공략</p>
+                
+                <ul class="space-y-3 border-t border-brand-border/40 pt-4 text-xs sm:text-sm">
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 체스트 플라이</span>
+                        <span class="font-bold text-brand-orange">3세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 벤치프레스</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 인클라인 벤치프레스</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 딥스</span>
+                        <span class="font-bold text-brand-orange">3세트 <span class="text-neutral-400 font-medium">(한계치)</span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Day 2: 등 루틴 -->
+            <div class="bg-brand-card border border-brand-border hover:border-brand-orange/40 rounded-2xl p-6 transition-all shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-black text-brand-orange uppercase bg-brand-orange/10 px-3 py-1 rounded-full">Day 2</span>
+                    <span class="text-lg text-brand-orange"><i class="fa-solid fa-child"></i></span>
+                </div>
+                <h3 class="text-xl font-black text-white mb-1">등 루틴 (Back)</h3>
+                <p class="text-xs text-brand-grayText mb-4">프레임 확장 및 탄탄한 후면 코어 발달</p>
+                
+                <ul class="space-y-3 border-t border-brand-border/40 pt-4 text-xs sm:text-sm">
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 암풀다운</span>
+                        <span class="font-bold text-brand-orange">3세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 데드리프트</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~10회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 렛풀다운</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 시티드 로우</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Day 3: 어깨 루틴 -->
+            <div class="bg-brand-card border border-brand-border hover:border-brand-orange/40 rounded-2xl p-6 transition-all shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-black text-brand-orange uppercase bg-brand-orange/10 px-3 py-1 rounded-full">Day 3</span>
+                    <span class="text-lg text-brand-orange"><i class="fa-solid fa-user-ninja"></i></span>
+                </div>
+                <h3 class="text-xl font-black text-white mb-1">어깨 루틴 (Shoulder)</h3>
+                <p class="text-xs text-brand-grayText mb-4">측면 볼륨 확대 및 전·후면 3D 둥근 삼각근 완성</p>
+                
+                <ul class="space-y-3 border-t border-brand-border/40 pt-4 text-xs sm:text-sm">
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 숄더프레스</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(12~20회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 리버스 팩덱 플라이</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(12~20회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 사이드 레터럴 레이즈</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(12~20회)</span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Day 4: 하체 및 팔 루틴 -->
+            <div class="bg-brand-card border border-brand-border hover:border-brand-orange/40 rounded-2xl p-6 transition-all shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-black text-brand-orange uppercase bg-brand-orange/10 px-3 py-1 rounded-full">Day 4</span>
+                    <span class="text-lg text-brand-orange"><i class="fa-solid fa-shoe-prints"></i></span>
+                </div>
+                <h3 class="text-xl font-black text-white mb-1">하체 & 팔 루틴 (Legs & Arms)</h3>
+                <p class="text-xs text-brand-grayText mb-4">전신 성장 호르몬 방출 및 직관적인 팔 펌핑</p>
+                
+                <ul class="space-y-3 border-t border-brand-border/40 pt-4 text-xs sm:text-sm">
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 레그 프레스</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(12~15회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 레그 익스텐션 / 컬</span>
+                        <span class="font-bold text-brand-orange">각 4세트 <span class="text-neutral-400 font-medium">(15회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 이두 덤벨 컬</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                    <li class="flex justify-between items-center p-2.5 bg-brand-black/30 rounded-xl hover:bg-brand-black/50 transition-all">
+                        <span class="text-neutral-300">🏋️‍♂️ 삼두 케이블 푸쉬다운</span>
+                        <span class="font-bold text-brand-orange">4세트 <span class="text-neutral-400 font-medium">(8~12회)</span></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- RIGHT COLUMN: 세트 타이머 및 실시간 운동 체커 (4/12) -->
+    <div class="lg:col-span-4 space-y-8">
+        
+        <!-- 실시간 세트 휴식 타이머 -->
+        <div class="bg-brand-card border border-brand-orange/40 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-3 -right-3 w-16 h-16 bg-brand-orange/10 rounded-full blur-xl"></div>
+            <h2 class="text-lg font-black text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-half text-brand-orange animate-spin-slow"></i> 세트 휴식 타이머
+            </h2>
+            
+            <!-- 시간 디스플레이 -->
+            <div class="text-center py-6 bg-brand-black/50 rounded-2xl border border-brand-border/60 mb-6">
+                <span id="timerDisplay" class="text-5xl font-black tracking-widest text-white">01:30</span>
+                <p id="timerStateText" class="text-xs text-brand-orange mt-2 font-bold uppercase tracking-widest">RESTING ENGINE</p>
+            </div>
+            
+            <!-- 퀵 설정 버튼 -->
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <button onclick="setTimerPreset(60)" class="bg-brand-black hover:bg-brand-black/80 text-white font-bold py-2 px-1 rounded-xl text-xs border border-brand-border transition-all">60초</button>
+                <button onclick="setTimerPreset(90)" class="bg-brand-orange/10 hover:bg-brand-orange/20 text-brand-orange font-bold py-2 px-1 rounded-xl text-xs border border-brand-orange/30 transition-all">90초 (기본)</button>
+                <button onclick="setTimerPreset(120)" class="bg-brand-black hover:bg-brand-black/80 text-white font-bold py-2 px-1 rounded-xl text-xs border border-brand-border transition-all">120초</button>
+            </div>
+            
+            <!-- 제어 버튼 -->
+            <div class="flex gap-2">
+                <button id="timerToggleBtn" onclick="toggleTimer()" class="flex-1 bg-brand-orange hover:bg-brand-orangeHover text-white font-black py-3 rounded-xl text-sm transition-all shadow-lg transform active:scale-95">
+                    시작 <i class="fa-solid fa-play ml-1"></i>
+                </button>
+                <button onclick="resetTimer()" class="bg-brand-black hover:bg-neutral-800 text-neutral-300 font-bold px-4 py-3 rounded-xl text-sm border border-brand-border transition-all">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 실시간 오늘의 루틴 달성도 체커 -->
+        <div class="bg-brand-card border border-brand-border rounded-3xl p-6 shadow-2xl">
+            <h2 class="text-lg font-black text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-square-check text-brand-orange"></i> 이번 주 루틴 달성도
+            </h2>
+            
+            <!-- 달성 상태 바 -->
+            <div class="mb-6">
+                <div class="flex justify-between text-xs text-brand-grayText mb-2 font-bold">
+                    <span>이번 주 완료한 루틴수</span>
+                    <span id="achievementPercent" class="text-brand-orange">0%</span>
+                </div>
+                <div class="w-full bg-brand-black rounded-full h-2.5 overflow-hidden border border-brand-border">
+                    <div id="achievementBar" class="bg-brand-orange h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- 일일 체크리스트 컴포넌트 -->
+            <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                <label class="flex items-center gap-3 p-3 bg-brand-black/40 rounded-xl border border-brand-border/60 hover:border-brand-orange/20 cursor-pointer transition-all select-none">
+                    <input type="checkbox" onchange="updateRoutineProgress()" class="accent-brand-orange w-4.5 h-4.5 rounded">
+                    <div class="text-xs">
+                        <span class="block font-bold text-white">가슴 루틴 (Day 1) 완료</span>
+                        <span class="text-[10px] text-brand-grayText">총 14세트 수행</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-brand-black/40 rounded-xl border border-brand-border/60 hover:border-brand-orange/20 cursor-pointer transition-all select-none">
+                    <input type="checkbox" onchange="updateRoutineProgress()" class="accent-brand-orange w-4.5 h-4.5 rounded">
+                    <div class="text-xs">
+                        <span class="block font-bold text-white">등 루틴 (Day 2) 완료</span>
+                        <span class="text-[10px] text-brand-grayText">총 14세트 수행</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-brand-black/40 rounded-xl border border-brand-border/60 hover:border-brand-orange/20 cursor-pointer transition-all select-none">
+                    <input type="checkbox" onchange="updateRoutineProgress()" class="accent-brand-orange w-4.5 h-4.5 rounded">
+                    <div class="text-xs">
+                        <span class="block font-bold text-white">어깨 루틴 (Day 3) 완료</span>
+                        <span class="text-[10px] text-brand-grayText">총 12세트 수행</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-brand-black/40 rounded-xl border border-brand-border/60 hover:border-brand-orange/20 cursor-pointer transition-all select-none">
+                    <input type="checkbox" onchange="updateRoutineProgress()" class="accent-brand-orange w-4.5 h-4.5 rounded">
+                    <div class="text-xs">
+                        <span class="block font-bold text-white">하체 & 팔 (Day 4) 완료</span>
+                        <span class="text-[10px] text-brand-grayText">총 16세트 수행</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<section id="cta" class="py-20 text-center relative bg-gradient-to-t from-brand-black to-brand-card/10 border-t border-brand-border/40">
+    <div class="max-w-4xl mx-auto px-6">
+        <h3 class="text-3xl font-extrabold text-white mb-6">"가장 직관적이고 즐거운 운동 메이트, 민우와 함께 해볼까요?"</h3>
+        <p class="text-xs sm:text-sm text-brand-grayText mb-8 max-w-md mx-auto">
+            자신의 체력 한계와 목표를 바탕으로 함께 재미있고 정직한 쇠질 라이프를 계획해 보세요.
+        </p>
+        <form id="ctaForm" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3 bg-brand-card p-2 rounded-2xl border border-brand-border shadow-2xl">
+            <input type="email" required id="ctaEmail" placeholder="메일 주소 입력" class="bg-transparent text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-orange text-sm flex-grow" />
+            <button type="submit" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-extrabold px-6 py-3 rounded-xl text-sm transition-all">가이드 무료 구독 🚀</button>
+        </form>
+    </div>
+</section>
+
+<!-- Toast 알람 알림 컴포넌트 -->
+<div id="toast" class="fixed bottom-6 right-6 bg-brand-card border border-brand-orange text-white py-4 px-6 rounded-2xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-[100]">
+    <h5 class="text-sm font-bold" id="toastTitle">메시지</h5>
+</div>
+
+<script>
+    // ------------------ 스마트 오디오 비프음 타이머 로직 ------------------
+    let timerInterval = null;
+    let initialSeconds = 90; // 기본 90초 설정
+    let remainingSeconds = 90;
+    let isRunning = false;
+
+    // 비프 사운드 발생 장치 (외부 링크 필요 없는 웹 오디오 API 사용)
+    function playBeepSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.type = 'sine'; // 사인파 톤
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 고주파 비프
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime); // 볼륨 줄이기
+            
+            oscillator.start();
+            // 0.5초 동안 울리게 처리
+            setTimeout(() => {
+                oscillator.stop();
+                audioCtx.close();
+            }, 500);
+        } catch (e) {
+            console.warn("오디오 컨텍스트가 보안 정책에 의해 차단되었습니다.");
+        }
+    }
+
+    // 초 포맷팅 함수 (MM:SS)
+    function formatTime(sec) {
+        const minutes = Math.floor(sec / 60);
+        const seconds = sec % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // 남은 시간 화면 업데이트
+    function updateTimerUI() {
+        document.getElementById('timerDisplay').innerText = formatTime(remainingSeconds);
+    }
+
+    // 타이머 토글 (시작/일시정지)
+    function toggleTimer() {
+        const toggleBtn = document.getElementById('timerToggleBtn');
+        const stateText = document.getElementById('timerStateText');
+
+        if (isRunning) {
+            // 일시정지 모드
+            clearInterval(timerInterval);
+            isRunning = false;
+            toggleBtn.innerHTML = '재개 <i class="fa-solid fa-play ml-1"></i>';
+            toggleBtn.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+            toggleBtn.classList.add('bg-brand-orange', 'hover:bg-brand-orangeHover');
+            stateText.innerText = "PAUSED";
+            stateText.classList.replace('text-brand-orange', 'text-yellow-500');
+        } else {
+            // 재생 모드
+            isRunning = true;
+            toggleBtn.innerHTML = '정지 <i class="fa-solid fa-pause ml-1"></i>';
+            toggleBtn.classList.remove('bg-brand-orange', 'hover:bg-brand-orangeHover');
+            toggleBtn.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
+            stateText.innerText = "COUNTING REST";
+            stateText.classList.replace('text-yellow-500', 'text-brand-orange');
+
+            timerInterval = setInterval(() => {
+                if (remainingSeconds > 0) {
+                    remainingSeconds--;
+                    updateTimerUI();
+                } else {
+                    // 타이머 완전 만료
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    playBeepSound();
+                    showToast("🛎️ 휴식 시간이 종료되었습니다! 다음 세트 출격 준비!");
+                    resetTimer();
+                }
+            }, 1000);
+        }
+    }
+
+    // 타이머 초기화
+    function resetTimer() {
+        clearInterval(timerInterval);
+        isRunning = false;
+        remainingSeconds = initialSeconds;
+        updateTimerUI();
+
+        const toggleBtn = document.getElementById('timerToggleBtn');
+        const stateText = document.getElementById('timerStateText');
+        toggleBtn.innerHTML = '시작 <i class="fa-solid fa-play ml-1"></i>';
+        toggleBtn.className = "flex-1 bg-brand-orange hover:bg-brand-orangeHover text-white font-black py-3 rounded-xl text-sm transition-all shadow-lg transform active:scale-95";
+        stateText.innerText = "RESTING ENGINE";
+        stateText.className = "text-xs text-brand-orange mt-2 font-bold uppercase tracking-widest";
+    }
+
+    // 타이머 프리셋 시간 지정
+    function setTimerPreset(seconds) {
+        initialSeconds = seconds;
+        resetTimer();
+        showToast(`⏳ 휴식 타임이 ${seconds}초로 변경되었습니다.`);
+    }
+
+    // ------------------ 일일 루틴 달성 체커 로직 ------------------
+    function updateRoutineProgress() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checkedCount = 0;
+
+        checkboxes.forEach(box => {
+            if (box.checked) checkedCount++;
+        });
+
+        const percent = Math.round((checkedCount / total) * 100);
+        
+        // UI 변경 적용
+        document.getElementById('achievementPercent').innerText = `${percent}%`;
+        document.getElementById('achievementBar').style.width = `${percent}%`;
+
+        if (percent === 100) {
+            showToast("🎉 완벽한 성취! 오늘의 정직한 쇠질 루틴을 모두 끝마쳤습니다!");
+        }
+    }
+
+    // ------------------ 공통 토스트 컴포넌트 작동 로직 ------------------
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        toastTitle.innerText = message;
+        
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        
+        setTimeout(() => { 
+            toast.classList.add('translate-y-24', 'opacity-0'); 
+            toast.classList.remove('translate-y-0', 'opacity-100');
+        }, 3000);
+    }
+
+    // 구독 폼 제출 핸들러
+    const ctaForm = document.getElementById('ctaForm');
+    ctaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast("📧 루틴 가이드 구독이 완료되었습니다. 죄책감 없이 즐겨봅시다!");
+        ctaForm.reset();
+    });
+</script>
+</body>
+</html>
